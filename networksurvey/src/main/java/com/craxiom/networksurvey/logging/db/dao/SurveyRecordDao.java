@@ -21,17 +21,17 @@ public interface SurveyRecordDao
      * {@code :beaconDb} say which are), so a target that already took it, or isn't uploading, never
      * gets it again.
      */
-    String WAITING_FOR_A_TARGET = "(:ocid AND ocidUploaded = 0) OR (:beaconDb AND beaconDbUploaded = 0)";
+    String WAITING_FOR_A_TARGET = "(:ocid AND ocidUploaded = 0) OR (:beaconDb AND beaconDbUploaded = 0) OR (:t0st and t0stUploaded)";
 
     /** A Cellular record every target in play has received. */
-    String UPLOADED_TO_EVERY_TARGET = "(ocidUploaded = 1 OR NOT :ocid) AND (beaconDbUploaded = 1 OR NOT :beaconDb)";
+    String UPLOADED_TO_EVERY_TARGET = "(ocidUploaded = 1 OR NOT :ocid) AND (beaconDbUploaded = 1 OR NOT :beaconDb) AND (t0stUploaded = 1 OR NOT :t0st)";
 
     // GSM
     @Query("SELECT COUNT(*) FROM gsm_survey_records WHERE " + WAITING_FOR_A_TARGET)
-    int getGsmRecordCountForUpload(boolean ocid, boolean beaconDb);
+    int getGsmRecordCountForUpload(boolean ocid, boolean beaconDb, boolean t0st);
 
     @Query("SELECT * FROM gsm_survey_records WHERE " + WAITING_FOR_A_TARGET + " LIMIT :limit")
-    List<GsmRecordEntity> getGsmRecordsForUpload(boolean ocid, boolean beaconDb, int limit);
+    List<GsmRecordEntity> getGsmRecordsForUpload(boolean ocid, boolean beaconDb, boolean t0st, int limit);
 
     @Query("UPDATE gsm_survey_records SET ocidUploaded = 1 WHERE id IN (:recordIds)")
     void markGsmRecordsAsUploadedToOcid(List<Long> recordIds);
@@ -39,12 +39,15 @@ public interface SurveyRecordDao
     @Query("UPDATE gsm_survey_records SET beaconDbUploaded = 1 WHERE id IN (:recordIds)")
     void markGsmRecordsAsUploadedToBeaconDb(List<Long> recordIds);
 
+    @Query("UPDATE gsm_survey_records SET t0stUploaded = 1 WHERE id IN (:recordIds)")
+    void markGsmRecordsAsUploadedToT0st(List<Long> recordIds);
+
     // CDMA
     @Query("SELECT COUNT(*) FROM cdma_survey_records WHERE " + WAITING_FOR_A_TARGET)
-    int getCdmaRecordCountForUpload(boolean ocid, boolean beaconDb);
+    int getCdmaRecordCountForUpload(boolean ocid, boolean beaconDb, boolean t0st);
 
     @Query("SELECT * FROM cdma_survey_records WHERE " + WAITING_FOR_A_TARGET + " LIMIT :limit")
-    List<CdmaRecordEntity> getCdmaRecordsForUpload(boolean ocid, boolean beaconDb, int limit);
+    List<CdmaRecordEntity> getCdmaRecordsForUpload(boolean ocid, boolean beaconDb, boolean t0st, int limit);
 
     @Query("UPDATE cdma_survey_records SET ocidUploaded = 1 WHERE id IN (:recordIds)")
     void markCdmaRecordsAsUploadedToOcid(List<Long> recordIds);
@@ -52,12 +55,15 @@ public interface SurveyRecordDao
     @Query("UPDATE cdma_survey_records SET beaconDbUploaded = 1 WHERE id IN (:recordIds)")
     void markCdmaRecordsAsUploadedToBeaconDb(List<Long> recordIds);
 
+    @Query("UPDATE cdma_survey_records SET t0stUploaded = 1 WHERE id IN (:recordIds)")
+    void markCdmaRecordsAsUploadedToT0st(List<Long> recordIds);
+
     // UMTS
     @Query("SELECT COUNT(*) FROM umts_survey_records WHERE " + WAITING_FOR_A_TARGET)
-    int getUmtsRecordCountForUpload(boolean ocid, boolean beaconDb);
+    int getUmtsRecordCountForUpload(boolean ocid, boolean beaconDb, boolean t0st);
 
     @Query("SELECT * FROM umts_survey_records WHERE " + WAITING_FOR_A_TARGET + " LIMIT :limit")
-    List<UmtsRecordEntity> getUmtsRecordsForUpload(boolean ocid, boolean beaconDb, int limit);
+    List<UmtsRecordEntity> getUmtsRecordsForUpload(boolean ocid, boolean beaconDb, boolean t0st, int limit);
 
     @Query("UPDATE umts_survey_records SET ocidUploaded = 1 WHERE id IN (:recordIds)")
     void markUmtsRecordsAsUploadedToOcid(List<Long> recordIds);
@@ -65,12 +71,15 @@ public interface SurveyRecordDao
     @Query("UPDATE umts_survey_records SET beaconDbUploaded = 1 WHERE id IN (:recordIds)")
     void markUmtsRecordsAsUploadedToBeaconDb(List<Long> recordIds);
 
+    @Query("UPDATE umts_survey_records SET t0stUploaded = 1 WHERE id IN (:recordIds)")
+    void markUmtsRecordsAsUploadedToT0st(List<Long> recordIds);
+
     // LTE
     @Query("SELECT COUNT(*) FROM lte_survey_records WHERE " + WAITING_FOR_A_TARGET)
-    int getLteRecordCountForUpload(boolean ocid, boolean beaconDb);
+    int getLteRecordCountForUpload(boolean ocid, boolean beaconDb, boolean t0st);
 
     @Query("SELECT * FROM lte_survey_records WHERE " + WAITING_FOR_A_TARGET + " LIMIT :limit")
-    List<LteRecordEntity> getLteRecordsForUpload(boolean ocid, boolean beaconDb, int limit);
+    List<LteRecordEntity> getLteRecordsForUpload(boolean ocid, boolean beaconDb, boolean t0st, int limit);
 
     @Query("UPDATE lte_survey_records SET ocidUploaded = 1 WHERE id IN (:recordIds)")
     void markLteRecordsAsUploadedToOcid(List<Long> recordIds);
@@ -78,18 +87,24 @@ public interface SurveyRecordDao
     @Query("UPDATE lte_survey_records SET beaconDbUploaded = 1 WHERE id IN (:recordIds)")
     void markLteRecordsAsUploadedToBeaconDb(List<Long> recordIds);
 
+    @Query("UPDATE lte_survey_records SET t0stUploaded = 1 WHERE id IN (:recordIds)")
+    void markLteRecordsAsUploadedToT0st(List<Long> recordIds);
+
     // NR (5G)
     @Query("SELECT COUNT(*) FROM nr_survey_records WHERE " + WAITING_FOR_A_TARGET)
-    int getNrRecordCountForUpload(boolean ocid, boolean beaconDb);
+    int getNrRecordCountForUpload(boolean ocid, boolean beaconDb, boolean t0st);
 
     @Query("SELECT * FROM nr_survey_records WHERE " + WAITING_FOR_A_TARGET + " LIMIT :limit")
-    List<NrRecordEntity> getNrRecordsForUpload(boolean ocid, boolean beaconDb, int limit);
+    List<NrRecordEntity> getNrRecordsForUpload(boolean ocid, boolean beaconDb, boolean t0st, int limit);
 
     @Query("UPDATE nr_survey_records SET ocidUploaded = 1 WHERE id IN (:recordIds)")
     void markNrRecordsAsUploadedToOcid(List<Long> recordIds);
 
     @Query("UPDATE nr_survey_records SET beaconDbUploaded = 1 WHERE id IN (:recordIds)")
     void markNrRecordsAsUploadedToBeaconDb(List<Long> recordIds);
+
+    @Query("UPDATE nr_survey_records SET t0stUploaded = 1 WHERE id IN (:recordIds)")
+    void markNrRecordsAsUploadedToT0st(List<Long> recordIds);
 
     // Wifi
     @Query("SELECT COUNT(*) FROM wifi_survey_records WHERE :beaconDb AND beaconDbUploaded = 0")
@@ -102,19 +117,19 @@ public interface SurveyRecordDao
     void markWifiRecordsAsUploadedToBeaconDb(List<Long> recordIds);
 
     @Query("DELETE FROM gsm_survey_records WHERE " + UPLOADED_TO_EVERY_TARGET)
-    void deleteUploadedGsmRecords(boolean ocid, boolean beaconDb);
+    void deleteUploadedGsmRecords(boolean ocid, boolean beaconDb, boolean t0st);
 
     @Query("DELETE FROM cdma_survey_records WHERE " + UPLOADED_TO_EVERY_TARGET)
-    void deleteUploadedCdmaRecords(boolean ocid, boolean beaconDb);
+    void deleteUploadedCdmaRecords(boolean ocid, boolean beaconDb, boolean t0st);
 
     @Query("DELETE FROM umts_survey_records WHERE " + UPLOADED_TO_EVERY_TARGET)
-    void deleteUploadedUmtsRecords(boolean ocid, boolean beaconDb);
+    void deleteUploadedUmtsRecords(boolean ocid, boolean beaconDb, boolean t0st);
 
     @Query("DELETE FROM lte_survey_records WHERE " + UPLOADED_TO_EVERY_TARGET)
-    void deleteUploadedLteRecords(boolean ocid, boolean beaconDb);
+    void deleteUploadedLteRecords(boolean ocid, boolean beaconDb, boolean t0st);
 
     @Query("DELETE FROM nr_survey_records WHERE " + UPLOADED_TO_EVERY_TARGET)
-    void deleteUploadedNrRecords(boolean ocid, boolean beaconDb);
+    void deleteUploadedNrRecords(boolean ocid, boolean beaconDb, boolean t0st);
 
     @Query("DELETE FROM wifi_survey_records WHERE beaconDbUploaded = 1")
     void deleteUploadedWifiRecords();
@@ -127,15 +142,15 @@ public interface SurveyRecordDao
      * @param beaconDb True if BeaconDB is a target, so a Cellular record must have reached it.
      */
     @Transaction
-    default void deleteAllUploadedRecords(boolean ocid, boolean beaconDb)
+    default void deleteAllUploadedRecords(boolean ocid, boolean beaconDb, boolean t0st)
     {
         // With no target in play every record would count as uploaded to all of them
-        if (!ocid && !beaconDb) return;
-        deleteUploadedGsmRecords(ocid, beaconDb);
-        deleteUploadedCdmaRecords(ocid, beaconDb);
-        deleteUploadedUmtsRecords(ocid, beaconDb);
-        deleteUploadedLteRecords(ocid, beaconDb);
-        deleteUploadedNrRecords(ocid, beaconDb);
+        if (!ocid && !beaconDb && !t0st) return;
+        deleteUploadedGsmRecords(ocid, beaconDb, t0st);
+        deleteUploadedCdmaRecords(ocid, beaconDb, t0st);
+        deleteUploadedUmtsRecords(ocid, beaconDb, t0st);
+        deleteUploadedLteRecords(ocid, beaconDb, t0st);
+        deleteUploadedNrRecords(ocid, beaconDb, t0st);
         deleteUploadedWifiRecords();
     }
 

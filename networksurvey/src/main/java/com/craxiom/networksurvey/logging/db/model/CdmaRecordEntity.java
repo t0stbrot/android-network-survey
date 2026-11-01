@@ -11,6 +11,7 @@ public class CdmaRecordEntity extends BaseRecordEntity
 
     public boolean ocidUploaded = false;
     public boolean beaconDbUploaded = false;
+    public boolean t0stUploaded = false;
 
     public int groupNumber;
 
