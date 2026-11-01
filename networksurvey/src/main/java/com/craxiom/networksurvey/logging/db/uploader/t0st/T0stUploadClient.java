@@ -30,7 +30,7 @@ import timber.log.Timber;
 public interface T0stUploadClient
 {
     @Multipart
-    @POST("/measure/uploadCsv")
+    @POST("/")
     Call<ResponseBody> uploadToT0st(
             @Part("key") RequestBody name,
             @Part("app") RequestBody appId,
